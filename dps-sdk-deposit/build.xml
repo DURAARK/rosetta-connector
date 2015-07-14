@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project dps-sdk-deposit">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <!--define folder properties-->
+    <property name="dir.buildfile" value="."/>
+    <property name="dir.workspace" value="/home/dagedv/workspace"/>
+    <property name="dir.jarfile" value="${dir.buildfile}"/>
+    <target name="create_run_jar">
+        <jar destfile="${dir.jarfile}/deposit.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="com.exlibris.dps.sdk.examples.Ingest"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="${dir.jarfile}/bin"/>
+            <fileset dir="${dir.jarfile}/conf"/>
+            <fileset dir="${dir.jarfile}/data"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/commons-codec-1.3.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/dom4j-1.6.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/dps-sdk-4.2.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/jxl-2.6.9.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/log4j-1.2.14.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/xmlbeans-2.3.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${dir.jarfile}/lib/jaxen-1.1-beta-6.jar"/>
+        </jar>
+    </target>
+</project>

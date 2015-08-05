@@ -39,13 +39,14 @@ public class Ingest {
 
 	//replace these below with values we got from Michelle:
 	private static final String PROPERTY_SOURCE_DIR_ON_SERVER = "data//depositExamples"; //"/home/dagedv/development/ROSETTA/Rosetta_deposit/dps-sdk-deposit/data/depositExamples"; // ?????
+//	private static final String PROPERTY_SOURCE_DIR_ON_SERVER = "DepositExample1"; //"/home/dagedv/development/ROSETTA/Rosetta_deposit/dps-sdk-deposit/data/depositExamples"; // ?????
 	private static final String D_PROPERTY_WSDL_URL = "http://rosetta.develop.lza.tib.eu/dpsws/deposit/DepositWebServices?wsdl";
 	private static final String P_PROPERTY_WSDL_URL = "http://rosetta.develop.lza.tib.eu/dpsws/deposit/ProducerWebServices?wsdl";
 	private static final String PROPERTY_PDS_URL = "https://rosetta.develop.lza.tib.eu/pds";
 	private static final String PROPERTY_MATERIAL_FLOW_ID = "36411632";
 	private static final String PROPERTY_DEPOSIT_SET_ID = "1";
-	private static final String PROPERTY_USER_NAME = "user_name"; 	// secret
-	private static final String PROPERTY_USER_PASSWORD = "user_password";		// secret
+	private static final String PROPERTY_USER_NAME = ""; 	// secret
+	private static final String PROPERTY_USER_PASSWORD = "";		// secret
 	private static final String PROPERTY_USER_INSTITUTION = "TIB";
 	private static final String PROPERTY_USER_PRODUCER_ID = "36384081";
 
@@ -61,19 +62,23 @@ public class Ingest {
 	// ==> Need input parameter that contains (a) the settings file and (b) the directory where the upload is sent to on Rosetta
 	
 	public static void main(String[] args) {
+
+		System.out.println("args = " + args.length);
 		
+		String folder = args[0];
+		System.out.println("Folder = " + folder);
 		
 		System.out.println("Working Directory = " + System.getProperty("user.dir"));
 		
 		Properties ingestSettings = new Properties();
 		String ingestPropertiesFilePath;
-		if ((args != null) && (args.length > 0) &&
-			(args[0] != null) && (args[0].trim().length() > 0)){
-			ingestPropertiesFilePath = args[0];
-		}
-		else {
+//		if ((args != null) && (args.length > 0) &&
+//			(args[0] != null) && (args[0].trim().length() > 0)){
+//			ingestPropertiesFilePath = args[0];
+//		}
+//		else {
 			ingestPropertiesFilePath = DEFAULT_INGEST_PROPERTIES_FILE_PATH;
-		}
+//		}
 		try {
 			ingestSettings.load(new FileInputStream(ingestPropertiesFilePath));
 		} catch (Exception e) {
@@ -82,6 +87,7 @@ public class Ingest {
 		}
 
 		String sourceDir =  PROPERTY_SOURCE_DIR_ON_SERVER; //ingestSettings.getProperty(PROPERTY_SOURCE_DIR_ON_SERVER);
+		System.out.println("Subdirectory in transfer folder: " + sourceDir);
 		File root = new File(sourceDir);
 		File[] inFiles = root.listFiles();
 		int index = sourceDir.lastIndexOf("/");
@@ -147,8 +153,8 @@ public class Ingest {
 		    
 		    String materialFlowId = PROPERTY_MATERIAL_FLOW_ID; //settings.getProperty(PROPERTY_MATERIAL_FLOW_ID);
 		    String depositSetId = PROPERTY_DEPOSIT_SET_ID; //settings.getProperty(PROPERTY_DEPOSIT_SET_ID);
-		    String userName = settings.getProperty(PROPERTY_USER_NAME);
-		    String userPassword = settings.getProperty(PROPERTY_USER_PASSWORD);
+		    String userName = PROPERTY_USER_NAME; //settings.getProperty(PROPERTY_USER_NAME);
+		    String userPassword = PROPERTY_USER_PASSWORD; //settings.getProperty(PROPERTY_USER_PASSWORD);
 		    String userInstitution = PROPERTY_USER_INSTITUTION; //settings.getProperty(PROPERTY_USER_INSTITUTION);
 		    String producerId = PROPERTY_USER_PRODUCER_ID; //settings.getProperty(PROPERTY_USER_PRODUCER_ID);
 
@@ -208,7 +214,12 @@ public class Ingest {
 			writeMsg("Started Processing Deposit For : " + currInFile.getName());
 			try{
 				// Submit the activity to deposit server, retval is XML that holds the response.
-				retval = dpws.submitDepositActivity(pdsHandle,materialFlowId,currInFile.getName(), producerId, depositSetId);
+//				retval = dpws.submitDepositActivity(pdsHandle,materialFlowId,currInFile.getName(), producerId, depositSetId);
+				
+				
+				retval = dpws.submitDepositActivity(pdsHandle,materialFlowId, folder, producerId, depositSetId);
+				//retval = dpws.submitDepositActivity(pdsHandle,materialFlowId, "/exlibris/dps/transfer/develop/tib_extern_deposit_duraark", producerId, depositSetId);
+				//retval = dpws.submitDepositActivity(pdsHandle,materialFlowId, "./tib_extern_deposit_duraark", producerId, depositSetId);
 				writeMsg("Sip Result: " + retval);
 			} catch(Exception e){
 				writeMsg("Failed depositing " + currInFile.getName() + "!");
